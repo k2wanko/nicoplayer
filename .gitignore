@@ -1,0 +1,13 @@
+#dist files
+app/**/*.js*
+app/**/*.json
+app/*.css
+app/*.html
+app/components/
+*.zip
+
+
+#System files
+node_modules/
+*.log
+.DS_Store

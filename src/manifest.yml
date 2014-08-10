@@ -1,0 +1,23 @@
+---
+
+manifest_version: 2
+name: __MSG_app_name__
+version: 0.0.0
+description: __MSG_app_description__
+
+default_locale: en
+icons:
+  128: assets/ic_app.png
+  256: assets/ic_app_x2.png
+
+app:
+  background:
+    scripts:
+      - background.js
+
+sandbox:
+  pages:
+    - index.html
+
+permissions:
+  - "*://*/*"

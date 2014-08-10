@@ -1,0 +1,8 @@
+---
+app_name:
+  message: Nico Player
+  description: "The name of the application"
+
+app_description:
+  message: This is Nico Player
+  description: "The description of the application"
