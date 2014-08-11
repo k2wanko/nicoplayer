@@ -15,9 +15,6 @@ app:
     scripts:
       - background.js
 
-sandbox:
-  pages:
-    - index.html
-
 permissions:
   - "*://*/*"
+  - storage

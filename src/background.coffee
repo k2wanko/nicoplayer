@@ -10,6 +10,8 @@ chrome.app.runtime.onLaunched.addListener ->
 
   chrome.app.window.create 'index.html',
     id: 'main'
+    minWidth: 320
+    minHeight: 180
     bounds:
       width: width
       height: height

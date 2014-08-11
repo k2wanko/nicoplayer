@@ -1,19 +1,19 @@
 {
   "name": "nico-player",
   "version": "0.0.0",
-  "devDependencies":{
+  "devDependencies": {
     "coffee-script": "*",
     "gulp": "*",
-    "gulp-util": "*",
+    "gulp-bower": "*",
     "gulp-clean": "*",
-    "gulp-include": "*",
-    "gulp-uglify": "*",
     "gulp-coffee": "*",
-    "gulp-sourcemaps": "*",
-    "gulp-yml": "*",
+    "gulp-include": "*",
     "gulp-jade": "*",
+    "gulp-sourcemaps": "*",
     "gulp-stylus": "*",
-    "gulp-zip": "*",
-    "gulp-bower": "*"
+    "gulp-uglify": "*",
+    "gulp-util": "*",
+    "gulp-yml": "*",
+    "gulp-zip": "*"
   }
 }

@@ -3,8 +3,22 @@ meta(charset="UTF-8")
 title ChromeApp
 link(rel="stylesheet", href="style.css")
 
-video#player(control)
+video#player(controls, autoplay)
 
-script(src="http://code.jquery.com/jquery-2.1.1.min.js")
-script(src="comment-player.js")
-script(src="core.js")
+dialog#login
+  form#loginForm
+    h3 Request login.
+    .form-control
+      label Email or Tel
+      input#mail_tel(type="text", name="mail_tel")
+    .form-control
+      label Password
+      input#password(type="password", name="password")
+    input#doLogin(type="submit", value="Login")
+
+dialog#errorDialog
+  p Error Message
+
+- var scripts = ["components/jquery/dist/jquery.min.js", "nico-session.js", "comment-player.js", "core.js"]
+for script in scripts
+  script(src="#{script}")
