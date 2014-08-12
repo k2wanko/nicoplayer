@@ -1,5 +1,7 @@
 do ($=jQuery)->
 
+  window.appWindow = chrome.app.window.current()
+    
   #= require ./lib/request.coffee
     
   save = (item, callback)-> chrome.storage.local.set item, callback
@@ -74,26 +76,48 @@ do ($=jQuery)->
       
   $ ->
 
+    $toolbar = $ "#toolbar"
+    $v_ctl = $ "#video-ctl"
+
+    for _$ in [$toolbar, $v_ctl]
+      _$
+      .on 'mouseenter', (-> @css "opacity", "1" ).bind(_$)
+      .on 'mouseleave', (-> @css "opacity", "0" ).bind(_$)
+
+    $("#alwaysOnTop").click ->
+      className = "glyphicon-ok"
+      _$ = $(@).find("span")
+      appWindow.setAlwaysOnTop flag = !appWindow.isAlwaysOnTop()
+      if flag then _$.addClass(className) else _$.removeClass(className)
+        
     player = window._player = new CommentPlayer "#player"
     player.$.volume = 0.15
-    currentSrc = ""
+    player.$.autoplay = false
+    $(window).resize ->
+      player.requestResize()
+    
+    currentUrl = ""
 
     play = window._play = (id)->
       url = "http://www.nicovideo.jp/watch/#{id}"
       request.get url, (err)->
         return showError err.message if err
         time = 1000 * 60 * 10
-        sessionLooper = ->
-          request.get url, (err)->
-            return showError err.message if err
-          setTimeout sessionLooper, time if document.querySelector("#player").src is currentSrc
-        setTimeout sessionLooper, time
+        sessionLooper = (_url)->
+          new ->
+            @url = _url
+            console.log 'looper check', @url is url, @url, url
+            if @url is url
+              request.get url, (err)->
+                return showError err.message if err
+              setTimeout sessionLooper.bind(null, @url), time
+        setTimeout sessionLooper.bind(null, url), time
         nicoapi.getflv id, (err, data)->
           return showError err.message if err
-          document.querySelector("#player").src = currentSrc = data.url
+          document.querySelector("#player").src = data.url
           nicoapi.getcomment data, (err, data, xhr)->
             return showError err.message if err
-            console.log data
+            data = data.sort (a, b)-> a.vpos - b.vpos
 
     
     session.isLogin (err, state)->

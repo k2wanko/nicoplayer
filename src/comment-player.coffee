@@ -2,21 +2,27 @@
 css = (element, styles)->
   element.style[k] = v for k, v of styles
 
+gcd = (a, b) ->
+  if (a == b) then a else  gcd(Math.abs(a - b), if (a > b) then b else a)
+
 class CommentPlayer
 
+  ratio:
+    width: 16
+    height: 9
+    
   push: (comment, options)->
-    comment = if typeof comment is 'string'
-      new CommentPlayer.Comment comment
-    else if comment instanceof CommentPlayer.Comment
-      comment
-    else if typeof comment is 'object'
-      new CommentPlayer.Comment comment.content, comment
-                  
-    #@comments.push comment
-    #@$commentArea.insertBefore comment.$, null
+    self = @
+    comment = new CommentPlayer.Comment self, comment
     css comment.$,
-      'margin-left': "#{@$commentArea.offsetWidth - comment.$.offsetWidth}px"
-      'background': 'rgba(200, 200, 200, .5)'
+      'left': "100%"
+      #'background': 'rgba(200, 200, 200, .5)' # debug
+    @comments.push comment
+    @$commentArea.insertBefore comment.$, null
+    css comment.$,
+      'top': "#{comment.$.offsetHeight * (@comments.length-1)}px"
+    comment.start()
+      
     return comment
 
   pushAll: (comments)->
@@ -25,9 +31,49 @@ class CommentPlayer
   remove: (comment)->
     @$commentArea.removeChild comment.$
     @comments.splice (@comments.indexOf(comment)), 1
+
+  requestResize: ->
+    $ = @$cover
+    w = $.offsetWidth
+    h = $.offsetHeight
+    
+    if w > h
+      w = h / @ratio.height * @ratio.width
+      if w > $.offsetWidth
+        w = $.offsetWidth
+        h = w / @ratio.width * @ratio.height
+    else
+      h = w / @ratio.width * @ratio.height
+      if w > $.offsetHeight
+        h = $.offsetHeight
+        w = h / @ratio.height * @ratio.width
+
+    css @$commentArea,
+      width: "#{w}px"
+      height: "#{h}px"
+
+  # video control
+  play: ->
+    @$.play()
+
+  pause: ->
+    @$.pause()
+
+  paused: ->
+    @$.puased
+
+  replay: ->
+    @seek 0
+    @play()
+
+  seek: (time)->
+    @$.currentTime = time if typeof time is "number"
+    @$.currentTime
       
   constructor: (selector, options)->
     return new CommentPlayer(selector, options) unless @ instanceof CommentPlayer
+
+    self = @
 
     @comments = []
 
@@ -46,7 +92,13 @@ class CommentPlayer
       selector
 
     @$ = document.createElement 'video' unless @$
-
+    
+    @$.addEventListener 'loadeddata', ->
+      res =  gcd self.$.videoWidth, self.$.videoHeight
+      self.ratio.width = self.$.videoWidth/res
+      self.ratio.height = self.$.videoHeight/res
+      self.requestResize()
+      
     css @$,
       width: '95%'
       height: '95%'
@@ -71,56 +123,62 @@ class CommentPlayer
       
     @$cover.className = 'cp-cover'
 
+    @$.parentNode.replaceChild @$cover, @$
+    @$cover.insertBefore @$, null
+
     @$commentArea = document.createElement 'div'
 
     @$commentArea.className = 'comment-area'
 
-    css @$commentArea, 
-      width: @$.offsetWidth + 'px'
-      height: @$.offsetHeight + 'px'
+    css @$commentArea,
       position: 'absolute'
       top: '0px'
       left: '0px'
+      right: '0px'
+      bottom: '0px'
+      margin: 'auto'
       overflow: 'hidden'
+      #'background': 'rgba(200, 0, 200, .5)' # debug
 
-    @$.parentNode.replaceChild @$cover, @$
-    @$cover.insertBefore @$, null
     @$cover.insertBefore @$commentArea, null
+    @requestResize()
     
-    self = @
-
-    tick = 1000 / 60
-    _loop = ->
-      for comment in self.comments
-        comment.onFrame.call(comment, self) if comment?.onFrame?
-      setTimeout _loop, tick
-    setTimeout _loop, tick
+    #tick = 1000 / 60
+    # _loop = ->
+    #   for comment in self.comments
+    #     comment.onFrame.call(comment, self) if comment?.onFrame?
+    #   setTimeout _loop, tick
+    # setTimeout _loop, tick
     
 class CommentPlayer.Comment
 
-  speed: 1
-    
-  #onFrame: (player)->
-  #  x = parseInt @$.style['margin-left'].slice 0, @$.style['margin-left'].indexOf('px')
-  #  css @$,
-  #    'margin-left': "#{@$.offsetLeft-@speed}px"
-  #  if @$.offsetLeft < (@$.offsetWidth*-1)
-  #    player.remove @
-  #  #console.log @$.parentNode
-      
-  constructor: (text, options)->
-    new Comment(text, options) unless @ instanceof CommentPlayer.Comment
+  start: ->
+    setTimeout (self)->
+      console.log self
+      css self.$,
+        'transition': 'left 6s linear'
+        'left': "-100%"
+      setTimeout (self)->
+        self.player.remove comments
+      , 4000, self
+    , 0, @
+        
+  constructor: (player, comment)->
+    new Comment(player, text, options) unless @ instanceof CommentPlayer.Comment
+
+    @player = player
 
     @$ = document.createElement 'span'
-    
-    @$.innerText = text if typeof text is 'string'
-    @vpos = options.vpos
+
+    @content = comment.content
+    @$.innerText = @content
+    @vpos = comment.vpos
     
     css @$,
       color: '#FFF'
       'font-size': '24px'
       'text-shadow': '1px 1px .1px #000'
-      #padding: '5px'
+      'white-space': 'nowrap'
       #display: 'inline-block'
       #display: 'block'
       top: '0px'

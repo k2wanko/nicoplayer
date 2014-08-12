@@ -1,9 +1,25 @@
 doctype
 meta(charset="UTF-8")
-title ChromeApp
+title Nico Player
+link(rel="stylesheet", href="components/bootstrap/dist/css/bootstrap.min.css")
 link(rel="stylesheet", href="style.css")
 
+#toolbar.fix-pos
+  ul
+    li.dropdown
+      a(href="#", data-toggle="dropdown")#setting_btn.np-btn.dropdown-toggle
+        span.glyphicon.glyphicon-cog
+      ul.dropdown-menu
+        li
+          a(href="#")#alwaysOnTop 
+            span.glyphicon 常に手前に表示
+    li
+      a(href="#").np-btn
+        span.glyphicon.glyphicon-remove
+
 video#player(controls, autoplay)
+
+#video-ctl.fix-pos
 
 dialog#login
   form#loginForm
@@ -19,6 +35,6 @@ dialog#login
 dialog#errorDialog
   p Error Message
 
-- var scripts = ["components/jquery/dist/jquery.min.js", "nico-session.js", "comment-player.js", "core.js"]
+- var scripts = ["components/jquery/dist/jquery.min.js", "components/bootstrap/dist/js/bootstrap.js", "nico-session.js", "comment-player.js", "core.js"]
 for script in scripts
   script(src="#{script}")

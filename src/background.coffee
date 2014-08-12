@@ -12,6 +12,7 @@ chrome.app.runtime.onLaunched.addListener ->
     id: 'main'
     minWidth: 320
     minHeight: 180
+    frame: 'none'
     bounds:
       width: width
       height: height
