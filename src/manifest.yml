@@ -15,6 +15,13 @@ app:
     scripts:
       - background.js
 
+commands:
+  play-pause:
+    description: play/pause
+    global: true
+    suggested_key:
+      default: MediaPlayPause
+
 permissions:
   - "*://*/*"
   - storage

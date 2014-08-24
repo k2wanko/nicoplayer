@@ -60,7 +60,7 @@ class CommentPlayer
     @$.pause()
 
   paused: ->
-    @$.puased
+    @$.paused
 
   replay: ->
     @seek 0
@@ -69,7 +69,9 @@ class CommentPlayer
   seek: (time)->
     @$.currentTime = time if typeof time is "number"
     @$.currentTime
-      
+
+  onpause: null
+          
   constructor: (selector, options)->
     return new CommentPlayer(selector, options) unless @ instanceof CommentPlayer
 
@@ -98,6 +100,11 @@ class CommentPlayer
       self.ratio.width = self.$.videoWidth/res
       self.ratio.height = self.$.videoHeight/res
       self.requestResize()
+
+    @$.addEventListener 'play', ->
+      self.onplay.call self if self.onplay?.call
+
+    @$.onpause = -> self.onpause.call self if self.onpause?.call
       
     css @$,
       width: '95%'

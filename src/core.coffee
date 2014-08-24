@@ -38,7 +38,7 @@ do ($=jQuery)->
       , 0
       return false
 
-  nicoapi =
+  nicoapi = window._nicoapi = 
     decode: (str)->
       res = {}
       for item in  str.split '&'
@@ -70,7 +70,9 @@ do ($=jQuery)->
           comments.push res.chat if res.chat
         callback null, comments, xhr
         
-        
+    idParse: (url)->
+      return "" unless url
+      url.match(/watch\/([a-z]+[0-9]+)/)[1]
   
   session = window.session = new NicoSession
       
@@ -84,21 +86,42 @@ do ($=jQuery)->
       .on 'mouseenter', (-> @css "opacity", "1" ).bind(_$)
       .on 'mouseleave', (-> @css "opacity", "0" ).bind(_$)
 
+    $("#close_btn").click ->
+      appWindow.close()
+
     $("#alwaysOnTop").click ->
       className = "glyphicon-ok"
       _$ = $(@).find("span")
       appWindow.setAlwaysOnTop flag = !appWindow.isAlwaysOnTop()
       if flag then _$.addClass(className) else _$.removeClass(className)
-        
+
     player = window._player = new CommentPlayer "#player"
     player.$.volume = 0.15
     player.$.autoplay = false
     $(window).resize ->
       player.requestResize()
-    
+      
+    $("#play_btn").click ->
+      if player.paused() then player.play() else player.pause()
+
+    chrome.commands.onCommand.addListener (cmd)->
+      if cmd is 'play-pause'
+        if player.paused() then player.play() else player.pause()
+
+    player.onplay = ->
+      document.querySelector('#play_btn span').className = "glyphicon glyphicon-play"
+      
+    player.onpause = ->
+      document.querySelector('#play_btn span').className = "glyphicon glyphicon-pause"
+
+    player.onpaused = ->
+      console.log 'paused'
+           
     currentUrl = ""
 
     play = window._play = (id)->
+      if id.match(/^http/)
+        id = nicoapi.idParse id
       url = "http://www.nicovideo.jp/watch/#{id}"
       request.get url, (err)->
         return showError err.message if err
@@ -118,7 +141,7 @@ do ($=jQuery)->
           nicoapi.getcomment data, (err, data, xhr)->
             return showError err.message if err
             data = data.sort (a, b)-> a.vpos - b.vpos
-
+            player.play() #debug
     
     session.isLogin (err, state)->
       return showError err if err

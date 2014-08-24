@@ -14,12 +14,16 @@ link(rel="stylesheet", href="style.css")
           a(href="#")#alwaysOnTop 
             span.glyphicon 常に手前に表示
     li
-      a(href="#").np-btn
+      a(href="#").np-btn#close_btn
         span.glyphicon.glyphicon-remove
 
-video#player(controls, autoplay)
+video#player
 
 #video-ctl.fix-pos
+  div.ctl-box
+    a(href="#")#play_btn.np-btn
+      span.glyphicon.glyphicon-play
+    input#volume-bar(type="range" min="0" max="1" step="0.01" value="1")
 
 dialog#login
   form#loginForm
