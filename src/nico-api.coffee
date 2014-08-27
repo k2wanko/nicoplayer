@@ -4,7 +4,11 @@ class NicoAPI
 
   @Mylist:
     list: (group_id, callback)->
-      NicoAPI.call "/api/mylist/list", group_id: group_id, callback
+      xhr = NicoAPI.call "/api/mylist/list", group_id: group_id, (e, data)->
+        try
+          callback.call null, e, JSON.parse(data), xhr if callback?.call
+        catch e
+          callback.call null, e, null, xhr if callback?.call
 
   @call: (path, params, callback)->
     NicoAPI.request "POST", "http://www.nicovideo.jp" + path, params, callback
@@ -33,6 +37,8 @@ class NicoAPI
     xhr.open method, url
     xhr.setRequestHeader 'Content-Type', 'application/x-www-form-urlencoded' if method is 'POST'
     xhr.send query
+
+    return xhr
 
 
 window.NicoAPI = NicoAPI

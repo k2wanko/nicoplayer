@@ -75,6 +75,8 @@ do ($=jQuery)->
       url.match(/watch\/([a-z]+[0-9]+)/)[1]
   
   session = window.session = new NicoSession
+
+      
       
   $ ->
 
@@ -109,10 +111,10 @@ do ($=jQuery)->
         if player.paused() then player.play() else player.pause()
 
     player.onplay = ->
-      document.querySelector('#play_btn span').className = "glyphicon glyphicon-play"
+      document.querySelector('#play_btn span').className = "glyphicon glyphicon-pause"
       
     player.onpause = ->
-      document.querySelector('#play_btn span').className = "glyphicon glyphicon-pause"
+      document.querySelector('#play_btn span').className = "glyphicon glyphicon-play"
 
     player.onpaused = ->
       console.log 'paused'
@@ -142,10 +144,25 @@ do ($=jQuery)->
             return showError err.message if err
             data = data.sort (a, b)-> a.vpos - b.vpos
             player.play() #debug
+
+    randomPlay = ->
+      NicoAPI.Mylist.list "45448706", (err, data)->
+        return showError err if err
+
+        # sort by new order
+        data.mylistitem = data.mylistitem.sort (a, b)->
+          a.create_time < b.create_time
+          
+        ids = for item in data.mylistitem
+          item.item_data.video_id
+        
+        i = Math.floor(Math.random() * data.mylistitem.length)
+
+        play ids[i]
+
     
     session.isLogin (err, state)->
       return showError err if err
       return requestLogin() unless state
-      id = "sm17822068" #"1407469585" #"1407398611"
-      play id
+      randomPlay()
       
