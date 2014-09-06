@@ -104,6 +104,17 @@ class CommentPlayer
     @$.addEventListener 'play', ->
       self.onplay.call self if self.onplay?.call
 
+    @$.addEventListener 'timeupdate', ->
+      #console.log 'currenttime', self.$.currentTime
+
+    @$.addEventListener 'progress', (e)->
+      buf = self.$.buffered
+      i = buf.length
+      p = 0
+      while i--
+        if self.onprogress?.call
+          self.onprogress.call self, (buf.end(i) / self.$.duration) - buf.start(i)
+
     @$.onpause = -> self.onpause.call self if self.onpause?.call
       
     css @$,

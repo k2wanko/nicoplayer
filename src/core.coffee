@@ -88,6 +88,8 @@ do ($=jQuery)->
       .on 'mouseenter', (-> @css "opacity", "1" ).bind(_$)
       .on 'mouseleave', (-> @css "opacity", "0" ).bind(_$)
 
+    $seeker = $("#seeker")
+
     $("#close_btn").click ->
       appWindow.close()
 
@@ -118,6 +120,13 @@ do ($=jQuery)->
 
     player.onpaused = ->
       console.log 'paused'
+
+    player.onprogress = (progress)->
+      progress = progress * 100
+      #console.log progress
+      document.querySelector('#progress').style['width'] = progress + '%'
+      
+      
            
     currentUrl = ""
 
