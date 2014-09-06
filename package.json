@@ -3,17 +3,20 @@
   "version": "0.0.0",
   "devDependencies": {
     "coffee-script": "*",
+    "coffeeify": "^0.7.0",
     "gulp": "*",
     "gulp-bower": "*",
+    "gulp-browserify": "*",
     "gulp-clean": "*",
     "gulp-coffee": "*",
-    "gulp-include": "*",
+    "gulp-if": "^1.2.4",
     "gulp-jade": "*",
+    "gulp-rename": "^1.2.0",
     "gulp-sourcemaps": "*",
     "gulp-stylus": "*",
     "gulp-uglify": "*",
     "gulp-util": "*",
-    "gulp-yml": "*",
+    "gulp-yaml": "*",
     "gulp-zip": "*"
   }
 }

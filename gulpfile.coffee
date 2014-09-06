@@ -1,11 +1,12 @@
 
 gulp = require 'gulp'
 gutil = require 'gulp-util'
+gulpif = require 'gulp-if'
 
-yml = require 'gulp-yml'
+yaml = require 'gulp-yaml'
 
-include = require 'gulp-include'
-coffee = require 'gulp-coffee'
+browserify = require 'gulp-browserify'
+rename = require 'gulp-rename'
 sourcemaps = require 'gulp-sourcemaps'
 uglify = require 'gulp-uglify'
 
@@ -34,7 +35,7 @@ gulp.task 'clean', ->
 
 gulp.task 'manifest', ->
   gulp.src 'src/manifest.yml'
-  .pipe yml().on( 'manifest:error', gutil.log )
+  .pipe yaml().on( 'manifest:error', gutil.log )
   .pipe gulp.dest 'app/'
 
 gulp.task 'bower', ->
@@ -42,16 +43,16 @@ gulp.task 'bower', ->
 
 gulp.task 'locales', ->
   gulp.src 'src/_locales/**/*.yml'
-  .pipe yml().on( 'manifest:error', gutil.log )
+  .pipe yaml().on( 'manifest:error', gutil.log )
   .pipe gulp.dest 'app/_locales/'
 
 gulp.task 'coffee', ->
-  gulp.src 'src/*.coffee'
-  .pipe include()
-  .pipe coffee().on( 'coffee:error', gutil.log )
-  .pipe sourcemaps.init()
-  .pipe uglify()
-  .pipe sourcemaps.write( './maps' )
+  gulp.src 'src/*.coffee', read: false
+  .pipe browserify
+    transform: ['coffeeify']
+    extensions: (ext for ext of require.extensions)
+  .pipe rename (path)-> path.extname = '.js'; path
+  .pipe gulpif !(DEBUG = true), uglify()
   .pipe gulp.dest 'app/'
     
 gulp.task 'jade', ->

@@ -1,11 +1,6 @@
-###
-#
-# 
-# 
-###
 
 do =>
-  request = window.request = 
+  request = module.exports = 
     get: (url, params, callback)->
       [callback, params] = [params, callback] unless callback
       query = if params then request._encode(params) else null
