@@ -28,12 +28,12 @@ video#player
 dialog#login
   form#loginForm
     h3 Request login.
-    .form-control
+    .input-group
       label Email or Tel
-      input#mail_tel(type="text", name="mail_tel")
-    .form-control
+      input#mail_tel(type="text", name="mail_tel").form-control
+    .input-group
       label Password
-      input#password(type="password", name="password")
+      input#password(type="password", name="password").form-control
     input#doLogin(type="submit", value="Login")
 
 dialog#errorDialog

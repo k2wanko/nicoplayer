@@ -2,7 +2,7 @@ do ($=jQuery)->
 
   window.appWindow = chrome.app.window.current()
     
-  #= require ./lib/request.coffee
+  request = require './lib/request'
     
   save = (item, callback)-> chrome.storage.local.set item, callback
   get = (key, callback)-> chrome.storage.local.get key, callback
@@ -135,8 +135,8 @@ do ($=jQuery)->
             if @url is url
               request.get url, (err)->
                 return showError err.message if err
-              setTimeout sessionLooper.bind(null, @url), time
-        setTimeout sessionLooper.bind(null, url), time
+              setTimeout sessionLooper.bind( null, @url ), time
+        setTimeout sessionLooper.bind( null, url ), time
         nicoapi.getflv id, (err, data)->
           return showError err.message if err
           document.querySelector("#player").src = data.url
@@ -145,7 +145,7 @@ do ($=jQuery)->
             data = data.sort (a, b)-> a.vpos - b.vpos
             player.play() #debug
 
-    randomPlay = ->
+    randomPlay = window._randomPlay = ->
       NicoAPI.Mylist.list "45448706", (err, data)->
         return showError err if err
 
