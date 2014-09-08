@@ -86,7 +86,7 @@ do ($=jQuery)->
     for _$ in [$toolbar, $v_ctl]
       _$
       .on 'mouseenter', (-> @css "opacity", "1" ).bind(_$)
-      .on 'mouseleave', (-> @css "opacity", "0" ).bind(_$)
+      .on 'mouseleave', (-> @css "opacity", "1" ).bind(_$)
 
     $seeker = $("#seeker")
 
@@ -120,6 +120,12 @@ do ($=jQuery)->
 
     player.onpaused = ->
       console.log 'paused'
+
+    player.ontimeupdate = ->
+      seeker = document.querySelector("#seeker")
+      size = seeker.offsetHeight
+      progressWidth = seeker.parentNode.offsetWidth - size
+      seeker.style['width'] = (((@currentTime() / player.$.duration) * progressWidth) + size) + 'px'
 
     player.onprogress = (progress)->
       progress = progress * 100

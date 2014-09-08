@@ -21,8 +21,10 @@ video#player
 
 #video-ctl.fix-pos
   div.ctl-box
-    div.progress(style="height: 10px; width: 100%;")
-      div#seeker.circle.seeker(style="width:10px;height: 10px; background: #FFF;")
+    - var size = 5
+    div.progress(style="height: #{size}px; width: 100%;")
+      div#seeker.seeker(style="width:#{size}px; height: #{size}px; background: #3498db;")
+        div.circle(style="width:#{size}px;height:#{size}px; position: absolute; right: 0%; background:#FFF;")
       div#progress.progress-bar(style="background: #FFF;opacity: .5;")
     a(href="#")#play_btn.np-btn
       span.glyphicon.glyphicon-play
