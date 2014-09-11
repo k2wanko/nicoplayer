@@ -109,6 +109,8 @@ do ($=jQuery)->
       request.get url, (err)->
         return showError err.message if err
         time = 1000 * 60 * 10
+
+        # [bug] issues #2
         sessionLooper = (_url)->
           new ->
             @url = _url
@@ -118,6 +120,8 @@ do ($=jQuery)->
                 return showError err.message if err
               setTimeout sessionLooper.bind( null, @url ), time
         setTimeout sessionLooper.bind( null, url ), time
+        ##2
+        
         nicoapi.getflv id, (err, data)->
           return showError err.message if err
           document.querySelector("#player").src = data.url
