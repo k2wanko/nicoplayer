@@ -118,7 +118,6 @@ do ($=jQuery)->
           time = 1000 * 60 * 15 # 15 min
           sessionLooper = (url)->
             currentUrl = $player.getAttribute('url')
-            console.log 'looper check', url is currentUrl, url, currentUrl
             if url is currentUrl
               request.get url, (err)->
                 return showError err.message if err
