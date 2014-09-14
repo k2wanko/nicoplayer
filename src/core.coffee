@@ -108,23 +108,23 @@ do ($=jQuery)->
       url = "http://www.nicovideo.jp/watch/#{id}"
       request.get url, (err)->
         return showError err.message if err
-        time = 1000 * 60 * 10
-
-        # [bug] issues #2
-        sessionLooper = (_url)->
-          new ->
-            @url = _url
-            console.log 'looper check', @url is url, @url, url
-            if @url is url
-              request.get url, (err)->
-                return showError err.message if err
-              setTimeout sessionLooper.bind( null, @url ), time
-        setTimeout sessionLooper.bind( null, url ), time
-        ##2
         
         nicoapi.getflv id, (err, data)->
           return showError err.message if err
-          document.querySelector("#player").src = data.url
+          $player = document.querySelector("#player")
+          $player.src = data.url
+          $player.setAttribute 'url', url
+          
+          time = 1000 * 60 * 15 # 15 min
+          sessionLooper = (url)->
+            currentUrl = $player.getAttribute('url')
+            console.log 'looper check', url is currentUrl, url, currentUrl
+            if url is currentUrl
+              request.get url, (err)->
+                return showError err.message if err
+                setTimeout sessionLooper, time, url
+          setTimeout sessionLooper, time, url
+
           nicoapi.getcomment data, (err, data, xhr)->
             return showError err.message if err
             data = data.sort (a, b)-> a.vpos - b.vpos
