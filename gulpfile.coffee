@@ -3,6 +3,9 @@ gulp = require 'gulp'
 gutil = require 'gulp-util'
 gulpif = require 'gulp-if'
 
+plumber = require 'gulp-plumber'
+notify = require 'gulp-notify'
+
 yaml = require 'gulp-yaml'
 
 browserify = require 'gulp-browserify'
@@ -35,6 +38,7 @@ gulp.task 'clean', ->
 
 gulp.task 'manifest', ->
   gulp.src 'src/manifest.yml'
+  .pipe plumber errorHandler: notify.onError "Error: <%= error.message %>"
   .pipe yaml().on( 'manifest:error', gutil.log )
   .pipe gulp.dest 'app/'
 
@@ -43,11 +47,13 @@ gulp.task 'bower', ->
 
 gulp.task 'locales', ->
   gulp.src 'src/_locales/**/*.yml'
+  .pipe plumber errorHandler: notify.onError "Error: <%= error.message %>"
   .pipe yaml().on( 'manifest:error', gutil.log )
   .pipe gulp.dest 'app/_locales/'
 
 gulp.task 'coffee', ->
   gulp.src 'src/*.coffee', read: false
+  .pipe plumber errorHandler: notify.onError "Error: <%= error.message %>"
   .pipe browserify
     transform: ['coffeeify']
     extensions: (ext for ext of require.extensions)
@@ -57,15 +63,18 @@ gulp.task 'coffee', ->
     
 gulp.task 'jade', ->
   gulp.src 'src/*.jade'
+  .pipe plumber errorHandler: notify.onError "Error: <%= error.message %>"
   .pipe jade()
   .pipe gulp.dest 'app/'
     
 gulp.task 'stylus', ->
   gulp.src 'src/*.styl'
+  .pipe plumber errorHandler: notify.onError "Error: <%= error.message %>"
   .pipe stylus()
   .pipe gulp.dest 'app/'
 
 gulp.task 'package', ['default'], ->
   gulp.src 'app/*'
+  .pipe plumber errorHandler: notify.onError "Error: <%= error.message %>"
   .pipe zip 'package.zip'
   .pipe gulp.dest './'
