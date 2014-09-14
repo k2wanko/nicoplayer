@@ -2,7 +2,8 @@ do ($=jQuery)->
 
   window.appWindow = chrome.app.window.current()
     
-  #= require ./lib/request.coffee
+  request = require './lib/request'
+  nicoapi = require './lib/nicoapi'
     
   save = (item, callback)-> chrome.storage.local.set item, callback
   get = (key, callback)-> chrome.storage.local.get key, callback
@@ -38,43 +39,10 @@ do ($=jQuery)->
       , 0
       return false
 
-  nicoapi = window._nicoapi = 
-    decode: (str)->
-      res = {}
-      for item in  str.split '&'
-        data = item.split '='
-        res[data[0]] = decodeURIComponent data[1]
-      res
-    getthumbinfo: (id, callback)->
-      url = "http://ext.nicovideo.jp/api/getthumbinfo/" + id
-      request.get url, (err, body, xhr)->
-        return callback(err) if err
-        callback.apply null, [null, xhr.responseXML, xhr]
-    getflv: (id, callback)->
-      url = "http://flapi.nicovideo.jp/api/getflv/" + id
-      request.get url, (err, body, xhr)->
-        return callback(err) if err
-        data =  nicoapi.decode body
-        callback.apply null, [null, data, xhr]
-    getcomment: (data, callback)->
-      url = data.ms.replace('api', 'api.json') + "thread"
-      request.get url,
-        version: '20090904'
-        thread: data.thread_id
-        res_from: -100
-      , (err, body, xhr)->
-        return callback err if err
-
-        comments = []
-        for res in JSON.parse body
-          comments.push res.chat if res.chat
-        callback null, comments, xhr
-        
-    idParse: (url)->
-      return "" unless url
-      url.match(/watch\/([a-z]+[0-9]+)/)[1]
   
   session = window.session = new NicoSession
+
+      
       
   $ ->
 
@@ -84,7 +52,9 @@ do ($=jQuery)->
     for _$ in [$toolbar, $v_ctl]
       _$
       .on 'mouseenter', (-> @css "opacity", "1" ).bind(_$)
-      .on 'mouseleave', (-> @css "opacity", "0" ).bind(_$)
+      .on 'mouseleave', (-> @css "opacity", "1" ).bind(_$)
+
+    $seeker = $("#seeker")
 
     $("#close_btn").click ->
       appWindow.close()
@@ -109,13 +79,26 @@ do ($=jQuery)->
         if player.paused() then player.play() else player.pause()
 
     player.onplay = ->
-      document.querySelector('#play_btn span').className = "glyphicon glyphicon-play"
+      document.querySelector('#play_btn span').className = "glyphicon glyphicon-pause"
       
     player.onpause = ->
-      document.querySelector('#play_btn span').className = "glyphicon glyphicon-pause"
+      document.querySelector('#play_btn span').className = "glyphicon glyphicon-play"
 
     player.onpaused = ->
       console.log 'paused'
+
+    player.ontimeupdate = ->
+      seeker = document.querySelector("#seeker")
+      size = seeker.offsetHeight
+      progressWidth = seeker.parentNode.offsetWidth - size
+      seeker.style['width'] = (((@currentTime() / player.$.duration) * progressWidth) + size) + 'px'
+
+    player.onprogress = (progress)->
+      progress = progress * 100
+      #console.log progress
+      document.querySelector('#progress').style['width'] = progress + '%'
+      
+      
            
     currentUrl = ""
 
@@ -125,27 +108,45 @@ do ($=jQuery)->
       url = "http://www.nicovideo.jp/watch/#{id}"
       request.get url, (err)->
         return showError err.message if err
-        time = 1000 * 60 * 10
-        sessionLooper = (_url)->
-          new ->
-            @url = _url
-            console.log 'looper check', @url is url, @url, url
-            if @url is url
-              request.get url, (err)->
-                return showError err.message if err
-              setTimeout sessionLooper.bind(null, @url), time
-        setTimeout sessionLooper.bind(null, url), time
+        
         nicoapi.getflv id, (err, data)->
           return showError err.message if err
-          document.querySelector("#player").src = data.url
+          $player = document.querySelector("#player")
+          $player.src = data.url
+          $player.setAttribute 'url', url
+          
+          time = 1000 * 60 * 15 # 15 min
+          sessionLooper = (url)->
+            currentUrl = $player.getAttribute('url')
+            if url is currentUrl
+              request.get url, (err)->
+                return showError err.message if err
+                setTimeout sessionLooper, time, url
+          setTimeout sessionLooper, time, url
+
           nicoapi.getcomment data, (err, data, xhr)->
             return showError err.message if err
             data = data.sort (a, b)-> a.vpos - b.vpos
-            player.play() #debug
+            #player.play() #debug
+
+    randomPlay = window._randomPlay = ->
+      NicoAPI.Mylist.list "45448706", (err, data)->
+        return showError err if err
+
+        # sort by new order
+        data.mylistitem = data.mylistitem.sort (a, b)->
+          a.create_time < b.create_time
+          
+        ids = for item in data.mylistitem
+          item.item_data.video_id
+        
+        i = Math.floor(Math.random() * data.mylistitem.length)
+
+        play ids[i]
+
     
     session.isLogin (err, state)->
       return showError err if err
       return requestLogin() unless state
-      id = "sm17822068" #"1407469585" #"1407398611"
-      play id
+      randomPlay()
       

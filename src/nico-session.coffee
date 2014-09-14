@@ -1,5 +1,5 @@
 
-#= require ./lib/request.coffee
+request = require './lib/request'
 
 class NicoSession
   @URL:

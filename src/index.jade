@@ -12,7 +12,7 @@ link(rel="stylesheet", href="style.css")
       ul.dropdown-menu
         li
           a(href="#")#alwaysOnTop 
-            span.glyphicon 常に手前に表示
+            span.glyphicon always Top
     li
       a(href="#").np-btn#close_btn
         span.glyphicon.glyphicon-remove
@@ -21,24 +21,30 @@ video#player
 
 #video-ctl.fix-pos
   div.ctl-box
+    - var size = 5
+    div.progress(style="height: #{size}px; width: 100%;")
+      div#seeker.seeker(style="width:#{size}px; height: #{size}px; background: #3498db;")
+        div.circle(style="width:#{size}px;height:#{size}px; position: absolute; right: 0%; background:#FFF;")
+      div#progress.progress-bar(style="background: #FFF;opacity: .5;")
     a(href="#")#play_btn.np-btn
       span.glyphicon.glyphicon-play
-    input#volume-bar(type="range" min="0" max="1" step="0.01" value="1")
+    //- input#volume-bar(type="range" min="0" max="1" step="0.01" value="1")
+
 
 dialog#login
   form#loginForm
     h3 Request login.
-    .form-control
+    .input-group
       label Email or Tel
-      input#mail_tel(type="text", name="mail_tel")
-    .form-control
+      input#mail_tel(type="text", name="mail_tel").form-control
+    .input-group
       label Password
-      input#password(type="password", name="password")
+      input#password(type="password", name="password").form-control
     input#doLogin(type="submit", value="Login")
 
 dialog#errorDialog
   p Error Message
 
-- var scripts = ["components/jquery/dist/jquery.min.js", "components/bootstrap/dist/js/bootstrap.js", "nico-session.js", "comment-player.js", "core.js"]
+- var scripts = ["components/jquery/dist/jquery.min.js", "components/bootstrap/dist/js/bootstrap.js", "nico-session.js", "nico-api.js", "comment-player.js", "core.js"]
 for script in scripts
   script(src="#{script}")

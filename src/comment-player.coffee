@@ -66,6 +66,9 @@ class CommentPlayer
     @seek 0
     @play()
 
+  currentTime: (time)->
+    @seek(time)
+
   seek: (time)->
     @$.currentTime = time if typeof time is "number"
     @$.currentTime
@@ -103,6 +106,17 @@ class CommentPlayer
 
     @$.addEventListener 'play', ->
       self.onplay.call self if self.onplay?.call
+
+    @$.addEventListener 'timeupdate', ->
+      self.ontimeupdate.call self if self.ontimeupdate?.call
+
+    @$.addEventListener 'progress', (e)->
+      buf = self.$.buffered
+      i = buf.length
+      p = 0
+      while i--
+        if self.onprogress?.call
+          self.onprogress.call self, (buf.end(i) / self.$.duration) - buf.start(i)
 
     @$.onpause = -> self.onpause.call self if self.onpause?.call
       
