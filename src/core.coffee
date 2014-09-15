@@ -47,7 +47,7 @@ do ($=jQuery)->
   $ ->
 
     $toolbar = $ "#toolbar"
-    $v_ctl = $ "#video-ctl"
+    $v_ctl = $ "#videoControls"
 
     for _$ in [$toolbar, $v_ctl]
       _$
@@ -70,6 +70,13 @@ do ($=jQuery)->
     player.$.autoplay = false
     $(window).resize ->
       player.requestResize()
+
+    videoControls = new (class VideoControls
+      constructor: (query)->
+        @$ = document.querySelector query
+        throw new Error "Not Found control dom" unless @$
+        
+    )("#videoControls")
       
     $("#play_btn").click ->
       if player.paused() then player.play() else player.pause()
@@ -96,7 +103,7 @@ do ($=jQuery)->
     player.onprogress = (progress)->
       progress = progress * 100
       #console.log progress
-      document.querySelector('#progress').style['width'] = progress + '%'
+      #document.querySelector('#progress').style['width'] = progress + '%'
       
       
            

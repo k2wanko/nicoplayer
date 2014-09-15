@@ -1,0 +1,44 @@
+
+.np-video-base
+  height 100%
+  float left
+
+.np-video-btn
+  @extend .np-video-base
+  text-decoration none
+  vertical-align middle
+  padding 8px
+  color rgba(255, 255, 255, .5)
+  &:hover
+    color rgba(255, 255, 255, 1)
+    text-shadow 1px 1px 1px #333
+    text-decoration none
+
+.np-video-volume-btn
+  @extend .np-video-btn
+
+.np-video-play
+  @extend .np-video-base
+  background #F0F0F0
+
+.np-video-seek
+  @extend .np-video-base
+  background #F0F
+
+.np-video-timer
+  @extend .np-video-base
+  background #F00
+
+.np-video-volume
+  @extend .np-video-base
+  background #00F
+
+.np-video-controls  
+  width 100%
+  background #0F0
+  .np-video-seek
+    float left
+  // .np-video-timer
+  // .np-video-volume
+  //   .np-video-volume-slider
+  //     .np-video-volume-btn

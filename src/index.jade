@@ -3,6 +3,7 @@ meta(charset="UTF-8")
 title Nico Player
 link(rel="stylesheet", href="components/bootstrap/dist/css/bootstrap.min.css")
 link(rel="stylesheet", href="style.css")
+link(rel="stylesheet", href="nicoplayer-video-controls.css")
 
 #toolbar.fix-pos
   ul
@@ -19,17 +20,25 @@ link(rel="stylesheet", href="style.css")
 
 video#player
 
-#video-ctl.fix-pos
-  div.ctl-box
-    - var size = 5
-    div.progress(style="height: #{size}px; width: 100%;")
-      div#seeker.seeker(style="width:#{size}px; height: #{size}px; background: #3498db;")
-        div.circle(style="width:#{size}px;height:#{size}px; position: absolute; right: 0%; background:#FFF;")
-      div#progress.progress-bar(style="background: #FFF;opacity: .5;")
-    a(href="#")#play_btn.np-btn
-      span.glyphicon.glyphicon-play
-    //- input#volume-bar(type="range" min="0" max="1" step="0.01" value="1")
+// #video-ctl.fix-pos
+//   div.ctl-box
+//     - var size = 5
+//     div.progress(style="height: #{size}px; width: 100%;")
+//       div#seeker.seeker(style="width:#{size}px; height: #{size}px; background: #3498db;")
+//         div.circle(style="width:#{size}px;height:#{size}px; position: absolute; right: 0%; background:#FFF;")
+//       div#progress.progress-bar(style="background: #FFF;opacity: .5;")
+//     a(href="#")#play_btn.np-btn
+//       span.glyphicon.glyphicon-play
+//     //- input#volume-bar(type="range" min="0" max="1" step="0.01" value="1")
 
+#videoControls.fix-pos
+  .np-video-controls
+    a.np-video-btn.np-video-play
+    .np-video-seek
+    .np-video-timer
+    .np-video-volume
+      .np-video-volume-slider
+      a.np-video-volume-btn
 
 dialog#login
   form#loginForm
