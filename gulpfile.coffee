@@ -21,12 +21,14 @@ zip = require 'gulp-zip'
 
 bower = require 'gulp-bower'
 
+svg2png = require 'gulp-svg2png'
+
 clean = require 'gulp-clean'
 
 errorNotify = (msg = "Error: <%= error.message %>")->
   plumber errorHandler: notify.onError msg
   
-gulp.task 'default', ['manifest', 'locales', 'bower', 'coffee', 'jade', 'stylus']
+gulp.task 'default', ['manifest', 'locales', 'bower', 'coffee', 'jade', 'stylus', 'assets']
 
 gulp.task 'watch', ['default'], ->
   gulp.watch 'src/manifest.yml', ['manifest']
@@ -34,10 +36,17 @@ gulp.task 'watch', ['default'], ->
   gulp.watch 'src/*.coffee', ['coffee']
   gulp.watch 'src/*.jade', ['jade']
   gulp.watch 'src/*.styl', ['stylus']
+  gulp.watch 'assets/*.svg', ['assets']
 
 gulp.task 'clean', ->
   gulp.src ['app/*', '!app/assets/']
   .pipe clean force: true
+
+gulp.task 'assets', ->
+  gulp.src ['assets/*.svg']
+  .pipe errorNotify()
+  .pipe svg2png()
+  .pipe gulp.dest 'app/assets'
 
 gulp.task 'manifest', ->
   gulp.src 'src/manifest.yml'

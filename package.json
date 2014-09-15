@@ -17,6 +17,7 @@
     "gulp-rename": "^1.2.0",
     "gulp-sourcemaps": "*",
     "gulp-stylus": "*",
+    "gulp-svg2png": "^0.3.0",
     "gulp-uglify": "*",
     "gulp-util": "*",
     "gulp-yaml": "*",
