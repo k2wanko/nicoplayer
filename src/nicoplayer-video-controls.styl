@@ -1,4 +1,17 @@
 
+$opacity = .7
+
+back(name)
+  background url('./assets/' + name + '.png')
+
+icon(name)
+  back name
+  background-repeat no-repeat
+  background-size contain
+  opacity $opacity
+  &:hover
+    opacity 1
+
 .np-video-base
   height 100%
   float left
@@ -7,7 +20,7 @@
   @extend .np-video-base
   text-decoration none
   vertical-align middle
-  padding 8px
+  //padding 8px
   color rgba(255, 255, 255, .5)
   &:hover
     color rgba(255, 255, 255, 1)
@@ -17,25 +30,57 @@
 .np-video-volume-btn
   @extend .np-video-btn
 
-.np-video-play
+.np-video-btn-base
   @extend .np-video-base
-  background #F0F0F0
+  width 18%
+
+.np-video-play
+  @extend .np-video-btn-base
+  icon play
+
+.np-video-pause
+  @extend .np-video-btn-base
+  icon pause
+
+.np-video-mute
+  @extend .np-video-btn-base
+  icon mute
+
+.np-video-volume-large
+  @extend .np-video-btn-base
+  icon volume-large
+
+.np-video-volume-small
+  @extend .np-video-btn-base
+  icon volume-small
 
 .np-video-seek
   @extend .np-video-base
-  background #F0F
+  width 64%
+  height 50%
+  position relative
+  opacity $opacity
+  top 50%
+  transform translateY(-50%)
+  &:hover
+    opacity 1
 
-.np-video-timer
-  @extend .np-video-base
-  background #F00
+.np-video-seek-bar
+  background #FFF
+  width 0%
+  height 100%
+  display block
+    
+    
 
 .np-video-volume
   @extend .np-video-base
-  background #00F
+  width 18%
+  //background #00F
 
 .np-video-controls  
   width 100%
-  background #0F0
+  background rgba(0,0,0,.5)
   .np-video-seek
     float left
   // .np-video-timer

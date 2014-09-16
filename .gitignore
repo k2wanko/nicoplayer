@@ -4,6 +4,7 @@ app/**/*.json
 app/*.css
 app/*.html
 app/components/
+app/assets/*.png
 *.zip
 
 

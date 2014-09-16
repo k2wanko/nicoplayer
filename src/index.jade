@@ -3,7 +3,6 @@ meta(charset="UTF-8")
 title Nico Player
 link(rel="stylesheet", href="components/bootstrap/dist/css/bootstrap.min.css")
 link(rel="stylesheet", href="style.css")
-link(rel="stylesheet", href="nicoplayer-video-controls.css")
 
 #toolbar.fix-pos
   ul
@@ -33,12 +32,11 @@ video#player
 
 #videoControls.fix-pos
   .np-video-controls
-    a.np-video-btn.np-video-play
+    a.np-video-btn.np-video-play#play_btn
     .np-video-seek
-    .np-video-timer
-    .np-video-volume
+      .np-video-seek-bar#seekbar
+    .np-video-volume.np-video-volume-small
       .np-video-volume-slider
-      a.np-video-volume-btn
 
 dialog#login
   form#loginForm

@@ -86,19 +86,18 @@ do ($=jQuery)->
         if player.paused() then player.play() else player.pause()
 
     player.onplay = ->
-      document.querySelector('#play_btn span').className = "glyphicon glyphicon-pause"
+      document.querySelector('#play_btn').className = "np-video-pause"
       
     player.onpause = ->
-      document.querySelector('#play_btn span').className = "glyphicon glyphicon-play"
+      document.querySelector('#play_btn').className = "np-video-play"
 
     player.onpaused = ->
       console.log 'paused'
 
     player.ontimeupdate = ->
-      seeker = document.querySelector("#seeker")
-      size = seeker.offsetHeight
-      progressWidth = seeker.parentNode.offsetWidth - size
-      seeker.style['width'] = (((@currentTime() / player.$.duration) * progressWidth) + size) + 'px'
+      bar = document.querySelector("#seekbar")
+      progress = (@currentTime() / player.$.duration) * 100
+      bar.style.width = progress + '%'
 
     player.onprogress = (progress)->
       progress = progress * 100
@@ -109,6 +108,10 @@ do ($=jQuery)->
            
     currentUrl = ""
 
+    init = ->
+      document.querySelector('#play_btn').className = "np-video-play"
+      document.querySelector("#seekbar").style.width = '0%'
+
     play = window._play = (id)->
       if id.match(/^http/)
         id = nicoapi.idParse id
@@ -118,6 +121,7 @@ do ($=jQuery)->
         
         nicoapi.getflv id, (err, data)->
           return showError err.message if err
+          init()
           $player = document.querySelector("#player")
           $player.src = data.url
           $player.setAttribute 'url', url
